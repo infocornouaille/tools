@@ -1,0 +1,35 @@
+%% Informations générales
+\NeedsTeXFormat{LaTeX2e}[2021-09-01]
+\ProvidesPackage{apmep}[2023-03-08]
+
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+
+%% Commandes utiles maths
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+
+%%Commandes APMEP
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\im}{\mathrm{i}}
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\DeclareMathOperator{\vect}{vect}
+
+\newcommand{\cg}{]}% crochet gauche
+\newcommand{\cd}{[}% crochet droit
+\newcommand{\pg}{\geqslant}% plus grand ou égal
+\newcommand{\pp}{\leqslant}% plus petit ou égal
+\renewcommand{\theenumi}{\textbf{\arabic{enumi}}}
+\renewcommand{\labelenumi}{\textbf{\theenumi.}}
+\renewcommand{\theenumii}{\textbf{\alph{enumii}}}
+\renewcommand{\labelenumii}{\textbf{\theenumii.}}
+\newcommand{\up}[1]{\ensuremath{^\text{#1}}}
+\newcommand{\degres}{\ensuremath{^\circ}}
+\newcommand{\Oij}{\ensuremath{(\text{O};\vect{\imath},\vect{\jmath})}}
+\newcommand{\Oijk}{\ensuremath{(\text{O};\vect{\imath},\vect{\jmath},\vect{k})}}
+\newcommand{\Ouv}{\ensuremath{(\text{O};\vect{u},\vect{v})}}
