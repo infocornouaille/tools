@@ -1,0 +1,33 @@
+%% Informations générales
+\NeedsTeXFormat{LaTeX2e}[1999/01/01]
+\ProvidesPackage{apmep}[2018/09/13]
+
+%\RequirePackage{amssymb}
+\RequirePackage{cancel}
+
+%% Commandes utiles maths
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+
+
+%%Commandes APMEP à cleaner
+\def\e{\text{e}}
+\def\i{\text{i}}
+\newcommand{\ds}{\displaystyle}%   displaystyle
+\newcommand{\cg}{\texttt{]}}% crochet gauche
+\newcommand{\cd}{\texttt{[}}% crochet droit
+\newcommand{\pg}{\geqslant}%  plus grand ou égal
+\newcommand{\pp}{\leqslant}%  plus petit ou égal
+\renewcommand{\theenumi}{\textbf{\arabic{enumi}}}
+\renewcommand{\labelenumi}{\textbf{\theenumi.}}
+\renewcommand{\theenumii}{\textbf{\alph{enumii}}}
+\renewcommand{\labelenumii}{\textbf{\theenumii.}}
+\newcommand{\up}[1]{$^#1$}
+\newcommand{\degres}{$^\circ$}
+\def\Oij{$\left(\text{O};~\vect{\imath},~\vect{\jmath}\right)$}
+\def\Oijk{$\left(\text{O};~\vect{\imath},~\vect{\jmath},~\vect{k}\right)$}
+\def\Ouv{$\left(\text{O};~\vect{u},~\vect{v}\right)$}
