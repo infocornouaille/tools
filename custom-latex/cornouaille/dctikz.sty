@@ -1,0 +1,199 @@
+%% Informations générales
+\NeedsTeXFormat{LaTeX2e}[1999/01/01]
+\ProvidesPackage{dctikz}[2018/09/13]
+
+\RequirePackage{tikz}
+\RequirePackage{pgfplots}
+\RequirePackage{xargs} %Pour créer des commandes avancées
+\RequirePackage{ifthen} %Pour la commande \lenghtest dans suite auto
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Librairies
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\usetikzlibrary{hobby} %Pour l'alogorithme de hobby
+\usetikzlibrary{arrows} %Pour avoir de nouvelles flèches
+%\usetikzlibrary{calc} %Pour les calculs en tikz
+%\usetikzlibrary{positioning} %Pour les annotations
+%\usetikzlibrary{decorations.markings} %Pour le marquage avancé
+%\usetikzlibrary{shapes.arrows} %D'autres flèches
+%\usetikzlibrary{intersections} %Pour les intersections dans l'espace
+%\usetikzlibrary{decorations.pathreplacing} %Pour les fl-ches marquées
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%Compteurs
+%%%%%%%%%%%%%%%%%%%%%%%%
+\newcounter{dctikz@j} %Utilisé dans les suites automatiques
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%commandes-graphiques
+%Commandes TIKZ
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Placement de point
+%Nom, x, y , placement du point (below, above, left, right)
+%\ppoint{A}{x}{y}{below}
+\newcommand{\ppoint}[4]{
+\draw (#2,#3) node [#4] {$#1$};
+		\draw [thick] (#2-0.1,#3) -- (#2+0.1,#3);
+		\draw [thick] (#2,#3-0.1) -- (#2,#3+0.1);
+}
+%La même avec marque en croix x
+\newcommand{\ppointc}[4]{
+\draw  plot[mark=x] (#2,#3) node [#4] {$#1$};
+}
+
+
+%Repère xmin,xmax,ymin,ymax, pas de la grille
+\newcommandx{\reperenormal}[5][5=0.5]{
+		%%%%%% Initialisation
+        \def\xmin{#1}   \def\xmax{#2}
+        \def\ymin{#3}   \def\ymax{#4}
+		\clip(\xmin,\ymin) rectangle (\xmax,\ymax); %Pour ne pas dépasser
+		\draw [thin, gray] (\xmin,\ymin) grid[step=#5] (\xmax,\ymax);
+		\draw[thick,->] (\xmin,0) -- (\xmax,0); 
+		%\draw (\xmax,0) node[below left] {$x$}; 
+		\draw [thick,->] (0,\ymin) -- (0,\ymax); 
+		%\draw (0,\ymax) node[below left] {$y$};
+		%\foreach \i in {\xmin,...,\xmax}{
+		%\ppoint{\i{}}{\i}{0}{below}
+		%\draw [thick] (\i,-0.1) -- (\i,0.1);
+		%}
+		%\foreach \j in {\ymin,...,\ymax}{
+		%\draw [thick] (-0.1,\j) -- (0.1,\j);
+		
+}
+
+%Repere (O;I,J)
+\newcommand{\repOIJ}{
+		\draw [thick] plot[mark=+] (0,0) node [below left] {$O$};
+		\draw [thick] plot[mark=+] (1,0) node [below] {$I$};
+		\draw [thick] plot[mark=+] (0,1) node [left] {$J$};
+	}
+	
+%Repère numérique (0;1,1)
+\newcommand{\repnum}{
+	\draw [thick] (0,0) node [below left] {$0$};
+	\draw [thick] (1,0) node [below] {$1$};
+	\draw [thick] (0,1) node [left] {$1$};
+	\draw (1,0) node {\small $+$};
+	\draw (0,1) node {\small $+$};
+	}
+
+%Tracer des fonctions
+%\tracefct[domaine sous la forme xmin:xmax] (\x,\f(\x));
+\newcommand{\tracefct}[1][\xmin:\xmax]{% Par défaut
+\draw[very thick,color=blue,smooth] plot[domain=#1,samples=100]
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Commande suite automatique
+%\suiteauto{u0}{nombres de termes}[domaine]
+%Définir fonction avant avec \def\f(#1){...expression de la fct en remplaçant x par #1 ou (#1) si puissance...}
+%Exemples:
+%Pour f(x) = x^2 -x +2
+%\def\f(#1){(#1)^2-#1+2}
+%Pour démarrer à u2 par exemple, placer avant: \setcounter{j}{2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommandx{\suiteauto}[3][3=\xmin:\xmax]{%
+				\def\un{#1}% valeur de u0
+        \def\n{#2}% nombre de points pour la suite
+				\def\domainefct{#3} % Tracer fonction sur un domaine
+				%Tracé de la fonction
+				\tracefct[\domainefct] ({\x},{\f(\x)});
+				%Tracé de y=x
+				\draw[very thick,color=red!75!black] plot[domain=\xmin:\xmax,samples=2] ({\x},{\x}); 
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				%Tracé des termes de la suite
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				%Initialisation
+				\pgfmathparse{\f(\un)}\let\vn=\pgfmathresult
+				\ifthenelse{\lengthtest{\vn pt > 0.1pt}}{ %Astuce pour test sur les réels
+											\draw (\un,0) node[below] {$u_{\thedctikz@j}$};
+											}{
+											\draw (\un,0) node[above] {$u_{\thedctikz@j}$};
+											}
+				%Génération
+				\foreach \m in {2,...,\n} {
+                \draw [dashed,line width=.8pt] (\un,0) -- (\un,\vn) -- (\vn,\vn) -- (\vn,0);
+								\stepcounter{dctikz@j}
+								\global\let\un=\vn
+								\pgfmathparse{\f(\un)}\global\let\vn=\pgfmathresult
+								\ifthenelse{\lengthtest{\vn pt > 0.01pt}}{
+											\draw (\un,0) node[below] {$u_{\thedctikz@j}$};
+											}{
+											\draw (\un,0) node[above] {$u_{\thedctikz@j}$};
+											}
+							  }
+				%Remise à zéro
+				\setcounter{dctikz@j}{0}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\repOij}{%
+\draw [->,line width=2.pt] (0.,0.) -- (1.,0.);
+	\draw [->,line width=2.pt] (0.,0.) -- (0.,1.);
+	\draw (0.5,0) node [below] {$\vect{i}$};
+	\draw (0,0.5) node [left] {$\vect{j}$};
+	\draw (0,0) node [below left] {$O$};
+}
+\newcommand{\repOuv}{%
+\draw [->,line width=2.pt] (0.,0.) -- (1.,0.);
+	\draw [->,line width=2.pt] (0.,0.) -- (0.,1.);
+	\draw (0.5,0) node [below] {$\vect{u}$};
+	\draw (0,0.5) node [left] {$\vect{v}$};
+	\draw (0,0) node [below left] {$O$};
+}
+
+
+\newcommand{\tracevect}{
+\draw [->,line width=2.pt]
+}
+
+
+%%%%%%%%%%%%%%%%%%
+%Bubulles !
+%%%%%%%%%%%%%%%
+\newcommand{\bubulles}[1][blue]{
+\begin{tikzpicture}[remember picture, overlay]
+ \begin{scope}[shift={(current page.south west)},shift={(7,3)},scale=1.5]
+ \shade[ball color=#1,opacity=.6] (0,0) circle (10ex);
+ \shade[ball color=#1,opacity=.8] (1.7,1) circle (5ex);
+ \shade[ball color=#1,opacity=.8] (1.5,3) circle (2ex);
+ \shade[ball color=#1,opacity=.5] (-0.5,3) circle (1ex);
+ \shade[ball color=#1,opacity=.8] (1,4) circle (1ex);
+ \shade[ball color=#1,opacity=.6] (3.5,2.5) circle (2ex);
+ \shade[ball color=#1,opacity=.8] (2.5,4.5) circle (4ex);
+ \shade[ball color=#1,opacity=.5] (3,4) circle (3ex);
+ \shade[ball color=#1,opacity=.8] (4.5,4.5) circle (3ex);
+ \shade[ball color=#1,opacity=.5] (5.1,4.7) circle (2ex);
+ \shade[ball color=#1,opacity=.8] (5,6) circle (1.5ex);
+ \shade[ball color=#1,opacity=.6] (3.5,5.5) circle (2ex);
+ \shade[ball color=#1,opacity=.8] (5,3) circle (1ex);
+ \end{scope}
+ \end{tikzpicture}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Commandes pratiques
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\grille}{
+ \begin{tikzpicture}[overlay,remember picture]
+   \begin{scope}[shift={(current page.south west)}]
+     \draw[gray!50] (0,0) grid[step=2mm] (current page.north east);
+     \draw[red!50] (0,0) grid[step=1cm] (current page.north east);
+			\foreach \i in {1,...,29}{
+			\draw (0.2,\i) node {\i};}
+			\foreach \i in {1,...,20}{
+			\draw (\i,0.5) node {\i};}
+   \end{scope}
+ \end{tikzpicture}
+ }
+
+\newcommandx{\Intervalle}[6][1=red,6=0]{
+\draw[#1,line width=2pt] (#2,#6) -- (#3,#6);
+	\draw[#1,thick] (#2,#6) node {\Large #4};
+	\draw[#1,thick] (#3,#6) node {\Large #5};
+}
