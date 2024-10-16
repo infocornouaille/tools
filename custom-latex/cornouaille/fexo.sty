@@ -1,0 +1,19 @@
+%% Informations générales
+\NeedsTeXFormat{LaTeX2e}[1999/01/01]
+\ProvidesPackage{fexo}[2022/09/09]
+
+\RequirePackage{fancyhdr} %Pour les en-têtes et pides de page
+\RequirePackage{lastpage} %Pour les en-têtes et pides de page
+%Commandes
+\newcommand{\fexo}[3]{ % Classe- Titre - Année
+\lhead{\small{#1}}
+\rhead{\small{#3}}
+\rfoot{\small{#2}}
+%\lfoot{\small{#4}}
+\cfoot{\small Page {\thepage} sur \pageref{LastPage}}
+\renewcommand \footrulewidth{.2pt}%
+\pagestyle{fancy}
+\begin{center}
+\bfseries{\Large{\scshape{#2}}}
+\end{center}
+}
