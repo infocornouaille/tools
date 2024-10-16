@@ -1,0 +1,51 @@
+%% Informations générales
+\NeedsTeXFormat{LaTeX2e}[2021-09-01]
+\ProvidesPackage{apmep}[2023-03-08]
+
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{xargs} % TODO: xparse nouvelle version de xargs
+\RequirePackage{etoolbox}
+
+
+\RequirePackage{cancel}
+
+%% Commandes utiles maths
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+
+
+%Vecteurs
+%$\vect{u}[x][y][z]$
+\newcommandx{\vect}[4][2,3,4]{\mathchoice%
+    {\overrightarrow{\displaystyle\mathstrut#1\,\,}}%
+    {\overrightarrow{\textstyle\mathstrut#1\,\,}}%
+    {\overrightarrow{\scriptstyle\mathstrut#1\,\,}}%
+    {\overrightarrow{\scriptscriptstyle\mathstrut#1\,\,}}\def\tempx{#2}
+    \ifdefempty{\tempx}{ }{\left(\begin{matrix}#2\\#3\\#4\end{matrix}\right)}}
+
+
+%%Commandes APMEP à cleaner
+\newcommand{\e}{\mathrm{e}}
+\renewcommand{\i}{\mathrm{i}}
+
+\newcommand{\cg}{]}% crochet gauche
+\newcommand{\cd}{[}% crochet droit
+\newcommand{\pg}{\geqslant}% plus grand ou égal
+\newcommand{\pp}{\leqslant}% plus petit ou égal
+
+\renewcommand{\theenumi}{\textbf{\arabic{enumi}}}
+\renewcommand{\labelenumi}{\textbf{\theenumi.}}
+\renewcommand{\theenumii}{\textbf{\alph{enumii}}}
+\renewcommand{\labelenumii}{\textbf{\theenumii.}}
+
+\newcommand{\up}[1]{\ensuremath{^\text{#1}}}
+\newcommand{\degres}{\ensuremath{^\circ}}
+
+\newcommand{\Oij}{\ensuremath{(\text{O};\vect{\imath},\vect{\jmath})}}
+\newcommand{\Oijk}{\ensuremath{(\text{O};\vect{\imath},\vect{\jmath},\vect{k})}}
+\newcommand{\Ouv}{\ensuremath{(\text{O};\vect{u},\vect{v})}}
