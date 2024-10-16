@@ -1,0 +1,171 @@
+%% Informations générales
+\NeedsTeXFormat{LaTeX2e}[1999/01/01]
+\ProvidesPackage{dctexte}[2018/09/13]
+
+%Chargement des packages
+\RequirePackage{xargs} %Pour créer des commandes avancées
+\RequirePackage{fancyhdr} %Pour les en-têtes et pides de page
+\RequirePackage{multido} %Pour la commande \ldotfill
+\RequirePackage{tikz} %Pour les couleurs et la commande \ddanger
+\RequirePackage{pst-all} %Pour les flèches de resolution
+\RequirePackage{calc} %Pour les calculs de resolution
+\RequirePackage{tabularx}
+\RequirePackage{multicol} %Pour colitemize et colenumerate
+%
+
+%Commandes
+\newcommand{\fexo}[3]{ % Classe- Titre - Année
+\lhead{\small{#1}}
+\rhead{\small{#3}}
+\rfoot{\small{#2}}
+%\lfoot{\small{#4}}
+\cfoot{\small Page {\thepage} sur \pageref{LastPage}}
+\renewcommand \footrulewidth{.2pt}%
+\pagestyle{fancy}
+\begin{center}
+\bfseries{\Large{\scshape{#2}}}
+\end{center}
+}
+
+
+%Remplit des lignes pointillés. Par défaut 3
+\newcommand{\ldotfill}[1][3]{%%\linespread{1.1} % A voir ici pour modifier la taille de l'interligne
+\multido{}{#1}{\makebox[\linewidth]{\textcolor{yellow}{\dotfill}}\\[\parskip]
+}}
+
+\newcommand{\ldotcarreaux}[1][3]{
+\begin{tikzpicture}
+	\draw[line width=0.3mm, color=A1!10, ystep=0.2, xstep=0.8] (0,0) grid (\linewidth,#1*0.8);
+  \draw[line width=0.3mm, color=A1!30, xstep=0.8, ystep=0.8] (0,0) grid (\linewidth,#1*0.8);
+\end{tikzpicture}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Commandes pour surligner du texte
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\sur}[1]{\fcolorbox{gray}{gray}{#1}}
+\newcommand{\surj}[1]{\fcolorbox{yellow}{yellow}{#1}}
+
+%Commande de surlignage avec option. Par défaut yellow
+\newcommandx{\surligne}[2][1=yellow]{\fcolorbox{#1}{#1}{#2}}
+
+
+%Pour encadrer facilement
+%\newcommand{\encadre}[1]{%
+%\fbox{\parbox{\linewidth-2\fboxrule-2\fboxsep}{#1}}
+%}
+\newcommand{\encadre}[1]{%
+\fbox{\parbox{0.85\linewidth}{#1}}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\NOM}{% %NOM Prénom .... dans un cadre
+\begin{tabularx}{\textwidth}{|X|}\hline
+ \\
+NOM-Prénom:\dotfill\\\hline
+\end{tabularx}\newline
+}
+%%%%%%%%%%%
+%Divers
+%%%%%%%%%
+
+\newcommand{\ddanger}{
+\begin{tikzpicture}[scale=0.6]
+\draw[fill=red,rounded corners=1.5pt]
+(0,0) -- (1,0) -- (0.5,1) -- cycle ;
+\draw[fill=white,rounded corners=2pt]
+(0.13,0.08) -- (0.87,0.08) -- (0.5,0.8) -- cycle ;
+\draw[fill=black,rounded corners=1pt]
+(0.5,0.3) -- (0.55,0.6) -- (0.45,0.6) -- cycle ;
+\fill (0.5,0.2) circle(0.04) ;
+\end{tikzpicture}
+}
+
+%%%%%%%% Et voila les flèches !!!
+
+\newcounter{resol}
+\newcounter{resoltemp}
+\newenvironment{resolution}{\setcounter{resol}{0}
+\psset{arrowscale=1.5} 
+$
+\psmatrix[colsep=0.4cm,rowsep=.2cm] 
+}{
+\endpsmatrix $
+}
+
+\newcommand{\ligne}[1]{
+\stepcounter{resol}
+#1 & \rnode{\theresol}{}\\}
+
+\newcommand{\justif}[2][green]{
+\setcounter{resoltemp}{\theresol - 1}
+\ncarc[arcangle=30, linecolor = #1]{->}{\theresoltemp}{\theresol}>{#2} 
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Les environnements colitemize et colenumerate
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newenvironment{colitemize}[1]{
+\begin{multicols}{#1}
+\begin{itemize}
+}{
+\end{itemize}
+\end{multicols}
+}
+\newenvironment{colenumerate}[1]{
+\begin{multicols}{#1}
+\begin{enumerate}
+}{
+\end{enumerate}
+\end{multicols}
+}
+
+
+%%%%%%%%%%%%%%%
+%Les environnements QCM
+%%%%%%%%%%%%%
+\newcounter{questionqcm}
+\setcounter{questionqcm}{0}
+\newenvironment{QCM}{}{}
+\newenvironment{GroupeQCM}{
+\begin{exercice}
+\setcounter{questionqcm}{0}
+}{
+
+
+\end{exercice}}
+\newenvironment{ChoixQCM}[1]{
+\begin{multicols}{#1}
+\begin{enumerate}
+}{
+\end{enumerate}
+\end{multicols}
+}
+\newcommand{\reponseQCM}[1]{\textbf{#1}}
+\newenvironment{EnonceCommunQCM}{}{}
+
+
+%Les carreaux
+
+
+\newcommand{\carreau}{
+\begin{tikzpicture}
+	\begin{tikzpicture}
+	\draw[line width=0.3mm, color=A1!10, ystep=0.2, xstep=0.8] (0,0) grid (0.8,0.8);
+  \draw[line width=0.3mm, color=A1!30, xstep=0.8, ystep=0.8] (0,0) grid (0.8,0.8);
+\end{tikzpicture}
+\end{tikzpicture}
+}
+\newcommand{\carreaux}[1][3]{
+\multido{\i=1+1}{#1}{\carreau \hspace{-0.18cm}}
+}
+\makeatletter
+\newcommand \hcarreaux {\leavevmode \cleaders \hb@xt@ .8cm{\hss \carreau \hss }\hfill \kern \z@}
+\makeatother
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Fin du package
+\AtEndDocument{%
+\label{LastPage} %Récupère la dernière page
+}
