@@ -1,0 +1,25 @@
+%% Informations générales
+\NeedsTeXFormat{LaTeX2e}[1999/01/01]
+\ProvidesPackage{corkarine}[2018/09/15]
+%La package de Karine
+
+\geometry{top=2.5cm,bottom=1.5cm,right=1cm,left=1cm}%marges
+\RequirePackage{layout}% pour commande \layout pour connaitre les marges
+
+\newcommand{\Karine}[5]{
+\Auteur{Karine Le Moal}
+\pagestyle{fancy}%numérotation des pages
+\fancyhead[L]{Lycée de Cornouaille}%haut de page gauche
+\fancyhead[C]{Mathématiques #1}%haut de page centre
+\fancyhead[R]{Année scolaire #2}%haut de page droite
+
+\renewcommand{\headrulewidth}{0.6pt}%trace un trait de séparation
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyfoot[C]{\textbf{Page \thepage/\pageref{LastPage}}}
+%titre
+\begin{center}
+\Large{\textsc{#3}} \quad \textsl{#4}
+\end{center}
+%titre
+}
+\setmainfont{Latin Modern Roman}%remet fonte classique
