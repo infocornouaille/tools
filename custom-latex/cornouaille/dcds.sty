@@ -1,0 +1,256 @@
+%% Informations générales
+\NeedsTeXFormat{LaTeX2e}[1999/01/01]
+\ProvidesPackage{dcds}[2018/09/13]
+
+\RequirePackage{xargs} %Pour créer des commandes avancées
+\RequirePackage{xstring} %Pour les commandes élaborées
+%\RequirePackage{tkz-tab}
+\RequirePackage{tabularx}
+\RequirePackage{fancybox} %Pour faire des boîtes et pour l'environnement VerbatimOut
+
+\RequirePackage{longtable} %Pour les tableaux sur plusieurs pages
+\RequirePackage{textcomp} %Pour les opérations sur les strings
+\RequirePackage{calculator}
+\RequirePackage{ifthen}
+
+\RequirePackage{graphicx} %Pour insérer le logo
+\RequirePackage{multirow} %Pour écrire sur plusieurs lignes dans les tableaux.Besoin pour \Bareme
+%\RequirePackage{fancyhdr} %Pour les en-têtes et pides de page
+
+\RequirePackage{dctexte}
+
+%Newwrite
+\newwrite\lignebareme
+\newwrite\ligneexo
+\newwrite\tableau
+\newwrite\mycortemp
+\newwrite\mycor
+
+%Compteurs
+\newcounter{exercice}
+\newcounter{solution}
+\newcounter{total}% Total des points
+\newcounter{colnum}% Utilisé pour les tableaux automatiques
+\newcounter{boolbareme} %Affichage ou non du barème
+\setcounter{boolbareme}{1} %Par défaut on affiche le barème
+\newcounter{boolsolution} %Affiche ou non les solutions
+\setcounter{boolsolution}{1} %Par défaut on affiche les solutions
+\newcounter{boolds}
+\setcounter{boolds}{0}
+\newcounter{boolcommandebareme}
+\setcounter{boolcommandebareme}{0}
+\newcounter{dansexo}
+\setcounter{dansexo}{0}
+\newcounter{barla}
+\newcounter{barlb}
+\newcounter{totalsolcent}
+\setcounter{totalsolcent}{0}
+\newcounter{tempcent}
+\newcounter{totalcent}
+\setcounter{totalcent}{0}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Commandes mode APMEP
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\cachesolution}{\setcounter{boolsolution}{0}}
+
+%Manipulation des compteurs dans les \write
+\newcommand{\tempi}{\arabic{enumi}}
+\newcommand{\tempii}{\alph{enumii}}
+\newcommand{\tempexo}{\arabic{exercice}}
+\newcommand{\tempsol}{\arabic{solution}}
+\def\tempbar{}
+\newcommand{\setbar}[1]{\def\tempbar{#1}} %A placer avant \begin{solution} pour définir le barème
+
+\newenvironment{solution}{%
+\stepcounter{solution}
+\begin{Sbox}
+\begin{minipage}{\linewidth}
+}
+{\end{minipage}
+\end{Sbox}
+\ifthenelse{\theboolsolution=0}{}{\newline
+\fbox{\begin{minipage}{\linewidth}
+\textbf{\textcolor{blue}{\underline{Solution}} : \hfill /\tempbar}\newline
+\TheSbox
+\end{minipage}
+}}}
+
+%Init
+\COPY{0}{\totalpoint}
+\COPY{0}{\totalsol}
+\COPY{0}{\totalcent}
+\setcounter{totalsolcent}{\totalsol}
+
+\def\getsol{0}
+
+%Pour le calcul des points des solutions
+\renewcommand{\setbar}[1]{
+\def\tempbar{#1}
+\MULTIPLY{100}{#1}{\temppoint}
+\addtocounter{totalsolcent}{\temppoint}
+\ADD{\totalsol}{\temppoint}{\totalsol}
+%\setcounter{totalsolcent}{\totalsol}
+
+}
+
+\newcommand{\addpointexo}[1]{
+\MULTIPLY{100}{#1}{\temppointexo}
+\addtocounter{totalcent}{\temppointexo}
+\ADD{\totalcent}{\temppointexo}{\totalcent}
+%\setcounter{totalcent}{\totalcent}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Barème automatique
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%A placer en début de document: \Bareme
+%Commande Bareme
+\newcommand{\Bareme}{
+%\newcommand{\Bareme}{
+\setcounter{boolcommandebareme}{1}
+\InputIfFileExists{\jobname.tab}{}{\textbf{* Barème en production *\\ *Nécessite une autre compilation*}}
+\immediate\openout\ligneexo=\jobname.lua
+\immediate\openout\lignebareme=\jobname.lub
+\immediate\openout\tableau=\jobname.tab
+\AtEndDocument{
+\DIVIDE{\thetotalcent}{100}{\getbarexo}
+%\pgfmathsetmacro{\tempexos}{\theexercice-1}
+\setcounter{barla}{\value{exercice}}
+\def\tempexos{\arabic{barla}}
+%\pgfmathsetmacro{\tempexob}{\theexercice+1}
+\setcounter{barlb}{\value{exercice}+2}
+\def\tempexob{\arabic{barlb}}
+\immediate\write\ligneexo{& \noexpand\hfill Note \noexpand\\}
+\immediate\write\lignebareme{&\noexpand\hfill/\getbarexo\noexpand\\\noexpand\hline}
+\immediate\write\tableau{\noexpand\begin{tabularx}
+{\noexpand\textwidth}{|*{\tempexos}{p{1.4cm}|}X|p{3cm}|}\noexpand\hline}
+\immediate\write\tableau{\noexpand\input{\jobname.lua}}
+\immediate\write\tableau{\noexpand\input{\jobname.lub}}
+\immediate\write\tableau{\noexpand\multicolumn{\tempexob}{|c|}{\noexpand\rule{0cm}{1.5cm}}
+\noexpand\\\noexpand\hline}
+\immediate\write\tableau{\noexpand\end{tabularx}}
+\immediate\closeout\lignebareme
+\immediate\closeout\ligneexo
+\immediate\closeout\tableau
+}% Fin AtEndDocument
+}% Fin commande Bareme
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cornouaille
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommandx{\cornouaille}[4][4]{ % Classe- Titre - Année
+\lhead{\small{#1}}
+\rhead{\small{#3}}
+\rfoot{\small{#2\\#4}}
+%\lfoot{\small{#4}}
+\cfoot{\small Page {\thepage} sur \pageref{LastPage}}
+\renewcommand \footrulewidth{.2pt}%
+\pagestyle{fancy}
+\ 
+
+\vspace{-1.2cm} %Pour régler la hauteur
+
+\begin{tabularx}{\linewidth}{|p{6cm}Xp{6cm}|}\hline
+ & & \hfill\multirow{4}{*}{\includegraphics*[width=1.00in,height=0.60in, keepaspectratio=false]{logo.png}}\\
+\textbf{\textsc{Nom: }}\dotfill & \centering{\textbf{\textsc{Mathématiques}}}& \\
+\textbf{\textsc{Prénom: }}\dotfill & \centering{\textbf{\textsc{#2}}}& \\
+\textbf{\textsc{Classe: }}\dotfill &\centering{\textbf{\textsc{#4}}}& \\\hline
+\end{tabularx}
+}% Fin commande Cornouaille
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Redéfinition de la commande \exo
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommandx{\exo}[2][1,2]{%
+\addpointexo{#2}
+\setcounter{enumi}{0}
+\setcounter{enumii}{0}
+\stepcounter{exercice}
+\ifthenelse{\equal{#2}{}}{\def\textebareme{}}{
+\ADD{\totalpoint}{#2}{\totalpoint}
+\def\textebareme{\textbf{#2 points}}}
+\ifthenelse{\theboolds=0}{}{
+\immediate\write\mycor{ & \noexpand\surligne{Exercice \tempexo:#1} & /#2 \noexpand\\ \noexpand\hline}}
+\textbf{\textsc{Exercice \theexercice :} #1} \hfill \textebareme\newline
+\ifthenelse{\theboolcommandebareme=0}{}{
+\immediate\write\ligneexo{Ex \tempexo \noexpand&}
+\immediate\write\lignebareme{\noexpand\rule{0cm}{1cm}\noexpand\hfill/#2 \noexpand&}
+}%Fin Else
+}% Fin Commande Exo
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Environnement exercice: permet le calcul des points des solutions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newenvironmentx{exercice}[2][1,2]{
+\addpointexo{#2}
+\setcounter{totalsolcent}{0}
+%\COPY{0}{\totalsol}
+\stepcounter{exercice}
+\setcounter{dansexo}{1}
+\def\temptitre{#1}
+\def\tempbarbar{#2}
+%\setcounter{enumi}{0}
+%\setcounter{enumii}{0}
+\ifthenelse{\equal{#2}{}}{\def\textebareme{}}{
+\ADD{\totalpoint}{#2}{\totalpoint}
+\def\textebareme{\textbf{#2 points}}}
+\immediate\openout\mycortemp=\jobname-\theexercice.bar
+\ifthenelse{\theboolcommandebareme=0}{}{
+\immediate\write\ligneexo{Ex \tempexo \noexpand&}
+\immediate\write\lignebareme{\noexpand\rule{0cm}{1cm}\noexpand\hfill/#2 \noexpand&}
+}
+\textbf{\textsc{Exercice \theexercice :} #1} \hfill \textebareme\newline
+}{
+\DIVIDE{\thetotalsolcent}{100}{\getsol}
+\ifthenelse{\theboolds=0}{}{
+\immediate\write\mycor{ & \noexpand\surligne{Exercice \tempexo:
+ \temptitre} & \noexpand\textcolor{red}{\getsol}/\tempbarbar \noexpand\\ \noexpand\hline}
+\immediate\closeout\mycortemp
+\immediate\write\mycor{\noexpand\input{\jobname-\tempexo.bar}}
+}%ifend
+\setcounter{dansexo}{0}
+}%fin commande
+
+\newcommand{\dscornouaille}{
+\setcounter{boolds}{1}
+\immediate\openout\mycor=\jobname.bar
+%%%%
+\newcommand{\AfficheCor}{%
+\immediate\closeout\mycor
+\begin{longtable}{|lll|}\hline
+\input{\jobname.bar}
+\end{longtable}
+}
+
+%Redéfinition de l'environnement solution
+\renewenvironment{solution}{
+\stepcounter{solution}
+\ifthenelse{\thedansexo=1}{
+\ifthenelse{\value{enumi}=0}{
+\immediate\write\mycortemp{ & \noexpand\encadre{\noexpand\input{\jobname-cor-\tempexo-\tempsol.cor}} & \tempbar \noexpand\\ 
+%\immediate\write\mycortemp{ & \noexpand\input{\jobname-cor-\tempexo-\tempsol.cor} & \tempbar \noexpand\\ 
+\noexpand\hline}
+}{
+\immediate\write\mycortemp{\noexpand\textbf {\tempi.\tempii} & \noexpand\encadre{\noexpand\input{\jobname-cor-\tempexo-\tempsol.cor}} &
+%\immediate\write\mycortemp{\noexpand\textbf {\tempi.\tempii} & \noexpand\input{\jobname-cor-\tempexo-\tempsol.cor} &
+\tempbar \noexpand\\ \noexpand\hline}}
+}{
+\ifthenelse{\value{enumi}=0}{
+\immediate\write\mycor{ & \noexpand\encadre{\noexpand\input{\jobname-cor-\tempexo-\tempsol.cor}} & \tempbar \noexpand\\ \noexpand\hline}
+}{
+\immediate\write\mycor{\noexpand\textbf {\tempi.\tempii} & \noexpand\encadre{\noexpand\input{\jobname-cor-\tempexo-\tempsol.cor}} & \tempbar \noexpand\\ \noexpand\hline}}
+}
+\VerbatimEnvironment
+\begin{VerbatimOut}{\jobname-cor-\theexercice-\thesolution.cor}
+}{
+\end{VerbatimOut}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\AtEndDocument{%
+\label{LastPage} %Récupère la dernière page
+}
+\AtEndDocument{\newpage\AfficheCor}
+}
