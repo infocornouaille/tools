@@ -1,0 +1,81 @@
+%% Informations générales
+\NeedsTeXFormat{LaTeX2e}[1999/01/01]
+\ProvidesPackage{dcmaths}[2018/09/13]
+
+%%Chargement des extensions
+\RequirePackage{apmep}
+\RequirePackage{easyeqn}
+\RequirePackage{xargs} % TODO: xparse nouvelle version de xargs
+\RequirePackage{etoolbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Commandes mathématiques
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Vecteurs
+%$\vect{u}[x][y][z]$
+
+
+\newcommand{\covec}[2]{
+    \left(\begin{matrix}#1\\#2\end{matrix}\right)
+}
+%Limites
+%$\Lim[< ou >]{variable}{point}$
+%$\Lim{n}{+\infty}$
+%$\Lim[<]{x}{2}$
+\newcommandx{\Lim}[3][1]{\def\temp{#1}\ifdefempty{\temp}
+    {\lim_{#2 \to #3}}
+    {\lim_{\substack{#2 \to #3\\#2~#1~#3}}}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Vecteur colonne
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\vectcord}[4]{	%Vecteur colonne: nom du vecteur- x- y - z
+    $\vect{#1}\left(\begin{matrix}#2\\#3\\#4\end{matrix}\right)$
+}
+
+
+%%%%%%%%%%%%%%%%
+%Divers
+%%%%%%%%%%%%%%%%%
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
+\newcommand{\norme}[1]{\left\lVert {#1} \right\rVert}
+\newcommand{\prodscal}[2]{#1\cdot#2} %Pas super utile....
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%System à 2 équations
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\systdeux}[2]{
+    \left\{\begin{array}{l}#1\hfill\null \\
+        \\
+        #2\hfill\null
+    \end{array}\right.
+    %\hfill 
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Groupement et accolade
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\groupe}[2]{
+    \left.\begin{array}{l}#1\hfill\null \\
+        \\
+        #2\hfill\null
+    \end{array}\right\} 
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%x1 et x2 après Delta...
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\xda}{
+    x_1=\frac{-b+\sqrt{\Delta}}{2a}
+}
+
+\newcommand{\xdb}{
+    x_2=\frac{-b-\sqrt{\Delta}}{2a}
+}
+
+
+%Autre
+\DeclareMathOperator{\re}{Re}
+\DeclareMathOperator{\im}{Im}
+\newcommand{\af}[1]{z_{\scriptscriptstyle #1}}
