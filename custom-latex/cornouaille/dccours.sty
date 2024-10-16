@@ -1,0 +1,171 @@
+%% Informations générales
+\NeedsTeXFormat{LaTeX2e}[1999/01/01]
+\ProvidesPackage{dccours}[2018/09/14]
+
+\RequirePackage[framemethod=tikz]{mdframed}
+
+%Couleurs Ecran
+\definecolor{couleurFond}{rgb}{1.0, 1.0, 1.0} % Blanc
+\definecolor{couleurCadre}{rgb}{0.0, 0.0, 0.0} %Noir
+
+%Commande \impression
+\newcommand{\impression}{
+\definecolor{couleurFond}{rgb}{1.0, 1.0, 0.0} %Jaune
+\definecolor{couleurCadre}{rgb}{1.0, 1.0, 0.0} %Jaune
+}
+
+%Paramétrage
+\mdfdefinestyle{methodestyle}{%
+linecolor=couleurCadre,
+linewidth=2pt,%
+frametitlerule=true,%
+frametitlebackgroundcolor=couleurFond,
+%backgroundcolor=J3,
+nobreak=true,
+innertopmargin=\topskip,
+}
+%%%%%%
+\mdfdefinestyle{theoremstyle}{%
+innertopmargin=10pt,
+linecolor=couleurCadre,%
+linewidth=2pt,
+topline=true,
+nobreak=true, %Evite que le cadre se sépare sur plusieurs pages
+frametitleaboveskip=\dimexpr-\ht\strutbox\relax
+}
+%
+\mdfdefinestyle{exemplestyle}{%
+linecolor=couleurCadre, %On change la couleur du cadre
+linewidth=1pt,%On change l'épaisseur du trait
+%frametitlerule=true,%
+%frametitlebackgroundcolor=yellow, %couleur de fond du titre
+%backgroundcolor=yellow, %couleur de fond du corps
+nobreak=true, %Evite que le cadre se sépare sur plusieurs pages
+innertopmargin=\topskip, %
+topline=false,
+rightline=false,
+bottomline=false,
+leftmargin = 40
+}
+%
+\mdfdefinestyle{definitionstyle}{%
+linecolor=couleurCadre, %On change la couleur du cadre
+linewidth=1pt,%On change l'épaisseur du trait
+frametitlerule=true,%
+%frametitlebackgroundcolor=yellow, %couleur de fond du titre
+%backgroundcolor=yellow, %couleur de fond du corps
+nobreak=true, %Evite que le cadre se sépare sur plusieurs pages
+innertopmargin=\topskip, %
+topline=false,
+rightline=false
+}
+
+%Environnements theoremstyle: theoreme, propriete, proprietes
+\newenvironment{theoreme}[1][]{%
+\mdfsetup{%
+style = theoremstyle,
+frametitle={%
+\tikz[baseline=(current bounding box.east),outer sep=0pt]
+\node[anchor=east,rectangle,fill=couleurFond]
+{\strut Théorème:~#1};},%
+}
+\begin{mdframed}[]\relax%
+}{\end{mdframed}
+}
+%
+\newenvironment{propriete}[1][]{%
+\mdfsetup{%
+style = theoremstyle,
+frametitle={%
+\tikz[baseline=(current bounding box.east),outer sep=0pt]
+\node[anchor=east,rectangle,fill=couleurFond]
+{\strut Propriété:~#1};},%
+}
+\begin{mdframed}[]\relax%
+}{\end{mdframed}
+}
+\newenvironment{proprietes}[1][]{%
+\mdfsetup{%
+style = theoremstyle,
+frametitle={%
+\tikz[baseline=(current bounding box.east),outer sep=0pt]
+\node[anchor=east,rectangle,fill=couleurFond]
+{\strut Propriétés:~#1};},%
+}
+\begin{mdframed}[]\relax%
+}{\end{mdframed}
+}
+%
+
+%Environnements exemplestyle: exemple,exemples,remarque,remarques
+\newenvironment{exemple}[1][]{
+\begin{mdframed}[style=exemplestyle,frametitle=\fcolorbox{couleurFond}{couleurFond}{Exemple : #1}]
+}{
+\end{mdframed}
+}
+\newenvironment{exemples}[1][]{
+\begin{mdframed}[style=exemplestyle,frametitle=\fcolorbox{couleurFond}{couleurFond}{Exemples : #1}]
+}{
+\end{mdframed}
+}
+\newenvironment{remarque}[1][]{
+\begin{mdframed}[style=exemplestyle,frametitle=\fcolorbox{couleurFond}{couleurFond}{Remarque : #1}]
+}{
+\end{mdframed}
+}
+\newenvironment{remarques}[1][]{
+\begin{mdframed}[style=exemplestyle,frametitle=\fcolorbox{couleurFond}{couleurFond}{Remarques : #1}]
+}{
+\end{mdframed}
+}
+
+%Environnements definitionstyle: définition, définitions
+
+\newenvironment{definition}[1][]{
+\begin{mdframed}[style=definitionstyle,frametitle=\fcolorbox{couleurFond}{couleurFond}{Définition : #1}]
+}{
+\end{mdframed}
+}
+\newenvironment{definitions}[1][]{
+\begin{mdframed}[style=definitionstyle,frametitle=\fcolorbox{couleurFond}{couleurFond}{Définitions : #1}]
+}{
+\end{mdframed}
+}
+%Environnements de base
+\newenvironment{valeurspart}[1][]{
+\begin{mdframed}[style=theoremstyle,frametitle=Valeurs Particulières : #1]
+}{
+\end{mdframed}
+}
+
+
+
+\newenvironment{definitionettheoreme}[1][]{
+\begin{mdframed}[style=theoremstyle,frametitle=Définition et théorème : #1]
+}{
+\end{mdframed}
+}
+
+
+
+\newenvironment{rappel}[1][]{
+\begin{mdframed}[style=theoremstyle,frametitle=Rappel : #1]
+}{
+\end{mdframed}
+}
+\newenvironment{preuve}[1][]{
+\begin{mdframed}[style=theoremstyle,frametitle=Preuve : #1]
+}{
+\end{mdframed}
+}
+
+\newenvironment{acquis}[1][]{
+\begin{mdframed}[style=theoremstyle,frametitle=Aquis : #1]
+}{
+\end{mdframed}
+}
+
+
+%Pour les méthodes
+\mdtheorem[style=methodestyle]{methode}{Méthode}
+
