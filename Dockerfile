@@ -25,14 +25,6 @@ COPY pandoc-templates /usr/share/pandoc/templates/
 # Mise à jour de la base de données de TeXLive
 RUN texhash
 
-# Installation de packages latex
-#https://distrib-coffee.ipsl.jussieu.fr/pub/mirrors/ctan/
-#RUN tlmgr init-usertree
-##RUN tlmgr update --self --all
-#RUN tlmgr update --all --repository http://mirrors.rit.edu/CTAN/systems/texlive/tlnet
-#RUN tlmgr install latexmk
-#RUN tlmgr install pst-all
-
 # Copie du script entrypoint dans le conteneur
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
