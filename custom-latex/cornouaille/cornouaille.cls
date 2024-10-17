@@ -16,11 +16,11 @@
 %Les packages pstricks
 \RequirePackage{pst-plot,pst-tree,pstricks,pst-node,pst-func}
 \RequirePackage{pst-eucl}
-%\RequirePackage{pst-bezier}
+\RequirePackage{pst-bezier}
 \RequirePackage{pst-text}
 \RequirePackage{pst-infixplot}
 \RequirePackage{pstricks-add}
-\RequirePackage{pst-all}
+%\RequirePackage{pst-all}
 
 
 %Pour les tableaux de valeur et de variation
