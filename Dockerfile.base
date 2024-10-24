@@ -1,0 +1,18 @@
+FROM texlive/texlive:latest
+
+# Installation des dépendances nécessaires
+RUN apt-get update && apt-get install -y \
+    python3-pip \
+    pandoc \
+    poppler-utils \
+    imagemagick \
+    python3-venv \
+    pipx
+
+# Configuration de pipx et ajout au PATH
+ENV PATH="/root/.local/bin:$PATH"
+RUN pipx ensurepath
+
+# Installation de black et isort
+RUN pipx install black && \
+   pipx install isort
