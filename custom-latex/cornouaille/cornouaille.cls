@@ -16,7 +16,7 @@
 %Les packages pstricks
 \RequirePackage{pst-plot,pst-tree,pstricks,pst-node,pst-func}
 \RequirePackage{pst-eucl}
-\RequirePackage{pst-bezier}
+%\RequirePackage{pst-bezier}
 \RequirePackage{pst-text}
 \RequirePackage{pst-infixplot}
 \RequirePackage{pstricks-add}
@@ -112,7 +112,7 @@
 %On écrit les maths tout le temps en grand
 \everymath{\displaystyle}
 
-\setmainfont{Times New Roman}
+%\setmainfont{Times New Roman}
 
 
 
