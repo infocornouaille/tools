@@ -3,17 +3,26 @@ FROM infocornouaille/tools:base
 
 # Installation de latexcor et pdfcor
 
-RUN pipx install latexcor && \
-    pipx install pdfcor
+# Installer les packages et forcer la génération des scripts
+RUN pip3 install latexcor --break-system-packages
+RUN pip3 install pdfcor --break-system-packages 
+#RUN pip3 install jupytercor --break-system-packages 
+RUN pip3 install panflute --break-system-packages
+RUN pip3 install jupytercor --break-system-packages 
+
+# Ajouter /usr/local/bin au PATH
+ENV PATH="/usr/local/bin:$PATH"
 
 # Création des dossiers pour les templates et filtres personnalisés
 RUN mkdir -p /usr/share/pandoc/templates \
-/usr/share/pandoc/data/templates/ \
+    /usr/share/pandoc/data/templates/ \
+    /usr/share/pandoc/data/filters/ \
     /usr/local/share/pandoc/filters \
     /usr/local/share/texmf/tex/latex/local
 
 # Copie des fichiers personnalisés (à adapter selon vos besoins)
 COPY pandoc-filters /usr/local/share/pandoc/data/filters/
+COPY pandoc-filters /usr/share/pandoc/data/filters/
 COPY pandoc-templates /usr/share/pandoc/data/templates/
 COPY custom-latex  /usr/local/texlive/texmf-local/tex/latex/local/
 COPY custom-latex /usr/local/share/texmf/tex/latex/local/
