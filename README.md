@@ -83,27 +83,26 @@ RUN pipx install black && \
 ```dockerfile
 FROM infocornouaille/tools:base
 
-# Install document processing tools
-RUN pipx install latexcor && \
-    pipx install pdfcor
+# Install Python tools using pipx
+RUN pipx install latexcor &&     pipx install pdfcor &&     pipx install panflute &&     pipx install jupytercor
 
-# Create directories for custom templates and filters
-RUN mkdir -p /usr/share/pandoc/templates \
-    /usr/share/pandoc/data/templates/ \
-    /usr/local/share/pandoc/filters \
-    /usr/local/share/texmf/tex/latex/local
+# Ajouter /usr/local/bin au PATH
+ENV PATH="/usr/local/bin:$PATH"
 
-# Copy custom files
-COPY pandoc-filters /usr/local/share/pandoc/data/filters/
-COPY pandoc-templates /usr/share/pandoc/data/templates/
-COPY custom-latex /usr/local/texlive/texmf-local/tex/latex/local/
+# Création des dossiers pour les templates et filtres personnalisés
+RUN mkdir -p /usr/share/pandoc/templates     /usr/local/share/pandoc/filters     /usr/local/share/texmf/tex/latex/local
+
+# Copie des fichiers personnalisés (à adapter selon vos besoins)
+COPY pandoc-filters /usr/local/share/pandoc/filters/
+COPY pandoc-templates /usr/share/pandoc/templates/
 COPY custom-latex /usr/local/share/texmf/tex/latex/local/
 
-# Update TeXLive database
+# Mise à jour de la base de données de TeXLive
 RUN texhash
 
-# Set working directory
+# Définition du répertoire de travail
 WORKDIR /data
+
 ```
 
 ## Custom Configuration
