@@ -1,11 +1,7 @@
 FROM infocornouaille/tools:base
-# Install Python tools using pipx
-RUN pipx install latexcor && \    pipx install pdfcor && \    pipx install panflute && \    pipx install jupytercor
 
-
-
-
-
+# Install Python tools using uv
+RUN uv tool install latexcor pdfcor panflute jupytercor
 # Création des dossiers pour les templates et filtres personnalisés
 RUN mkdir -p /usr/share/pandoc/templates \
     /usr/local/share/pandoc/filters \

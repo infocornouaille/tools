@@ -62,32 +62,25 @@ docker build --no-cache -f Dockerfile.perso -t infocornouaille/tools:perso .
 FROM texlive/texlive:latest
 
 # Install required dependencies
-RUN apt-get update && apt-get install -y \
-    python3-pip \
-    pandoc \
-    poppler-utils \
-    imagemagick \
-    python3-venv \
-    pipx
+RUN apt-get update && apt-get install -y     python3-pip     pandoc     poppler-utils     imagemagick     python3-venv
 
-# Configure pipx and add to PATH
-ENV PATH="/root/.local/bin:$PATH"
-RUN pipx ensurepath
+# Install uv (Python package installer)
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Install Python tools
-RUN pipx install black && \
-    pipx install isort
+# Add uv to PATH
+ENV PATH="/root/.cargo/bin:$PATH"
+
+# Install Python tools using uv
+RUN uv tool install black isort
+
 ```
 
 ### Custom Image (`Dockerfile.perso`)
 ```dockerfile
 FROM infocornouaille/tools:base
 
-# Install Python tools using pipx
-RUN pipx install latexcor &&     pipx install pdfcor &&     pipx install panflute &&     pipx install jupytercor
-
-# Ajouter /usr/local/bin au PATH
-ENV PATH="/usr/local/bin:$PATH"
+# Install Python tools using uv
+RUN uv tool install latexcor pdfcor panflute jupytercor
 
 # Création des dossiers pour les templates et filtres personnalisés
 RUN mkdir -p /usr/share/pandoc/templates     /usr/local/share/pandoc/filters     /usr/local/share/texmf/tex/latex/local

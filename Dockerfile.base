@@ -7,12 +7,13 @@ RUN apt-get update && apt-get install -y \
     poppler-utils \
     imagemagick \
     python3-venv \
-    pipx
 
-# Configuration de pipx et ajout au PATH
-ENV PATH="/root/.local/bin:$PATH"
-RUN pipx ensurepath
 
-# Installation de black et isort
-RUN pipx install black && \
-   pipx install isort
+# Install uv (Python package installer)
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Add uv to PATH
+ENV PATH="/root/.cargo/bin:$PATH"
+
+# Install Python tools using uv
+RUN uv tool install black isort
