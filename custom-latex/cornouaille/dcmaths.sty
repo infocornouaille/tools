@@ -1,10 +1,11 @@
 %% Informations générales
 \NeedsTeXFormat{LaTeX2e}[1999/01/01]
 \ProvidesPackage{dcmaths}[2018/09/13]
+\RequirePackage{amsmath}
+\RequirePackage{mathtools}
 
 %%Chargement des extensions
 \RequirePackage{apmep}
-%\RequirePackage{easyeqn}
 \RequirePackage{xargs} % TODO: xparse nouvelle version de xargs
 \RequirePackage{etoolbox}
 
@@ -16,9 +17,7 @@
 %$\vect{u}[x][y][z]$
 
 
-\newcommand{\covec}[2]{
-    \left(\begin{matrix}#1\\#2\end{matrix}\right)
-}
+\newcommand{\covec}[2]{\begin{pmatrix}#1\\#2\end{pmatrix}}
 %Limites
 %$\Lim[< ou >]{variable}{point}$
 %$\Lim{n}{+\infty}$
@@ -32,29 +31,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Vecteur colonne
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\vectcord}[4]{	%Vecteur colonne: nom du vecteur- x- y - z
-    $\vect{#1}\left(\begin{matrix}#2\\#3\\#4\end{matrix}\right)$
-}
 
 
 %%%%%%%%%%%%%%%%
+\newcommand{\vectcord}[4]{\vect{#1}\begin{pmatrix}#2\\#3\\#4\end{pmatrix}}
 %Divers
 %%%%%%%%%%%%%%%%%
-\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
-\newcommand{\norme}[1]{\left\lVert {#1} \right\rVert}
 \newcommand{\prodscal}[2]{#1\cdot#2} %Pas super utile....
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norme}{\lVert}{\rVert}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %System à 2 équations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\systdeux}[2]{
-    \left\{\begin{array}{l}#1\hfill\null \\
-        \\
-        #2\hfill\null
-    \end{array}\right.
-    %\hfill 
-}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\systdeux}[2]{\begin{cases}#1 \\ #2\end{cases}}
 %Groupement et accolade
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\groupe}[2]{

@@ -1,13 +1,14 @@
 \ProvidesPackage{cornouaille}[2024/10/20 v2.0 cornouaille package]
+\NeedsTeXFormat{LaTeX2e}[1995/06/01]
 
-% Packages personnalisés
+% Packages personnalisés (Loaded by cornouaille.cls, also here for direct .sty use)
 \RequirePackage{apmep}
 \RequirePackage{dcmaths}
 \RequirePackage{dccornouaille}
 \RequirePackage{dctikz}
 \RequirePackage{dccours}
 
-% Packages PSTricks (à vérifier la compatibilité avec LuaLaTeX)
+% Packages PSTricks
 \RequirePackage{pst-plot,pst-tree,pstricks,pst-node,pst-func}
 \RequirePackage{pst-eucl}
 \RequirePackage{pst-text}
@@ -20,37 +21,55 @@
 \RequirePackage{polyglossia}
 \setdefaultlanguage{french}
 \RequirePackage{fontspec}
-\RequirePackage{eurosym}
+\RequirePackage{eurosym} %Pour le symbole euro: \euro
 \RequirePackage{enumitem}
-\RequirePackage{fourier-otf}
-\RequirePackage[np]{numprint}
-\RequirePackage{colortbl}
-\RequirePackage{diagbox}
-\RequirePackage{multicol}
-\RequirePackage{sesatikz}
+\RequirePackage{fourier-otf} %Pour les symboles standards
+\RequirePackage[np]{numprint} % Permet de mettre en forme les nombres
+\RequirePackage{colortbl} %Pour colorer les tableaux
+\RequirePackage{diagbox} %Charge slashbox, calc, keyval, fp, pit2e Permet de faire des diagonales dans un tableau
+\RequirePackage{multicol} %Pour écrire sur plusieurs colonnes
+\RequirePackage{sesatikz} %Pour limportation Sesamath
+
+% General style settings (previously in .cls)
+\setlength{\headheight}{0.5cm} % Hauteur Entête (minimum 0.5cm sinon le package fancyhd plante...)
+\setlength\parindent{0mm} % Supprime lindentation de façon permanente
 
 % Définitions de commandes
-\newcommand{\og}{<<}
+\newcommand{\og}{<<} %ourvir les guillemets
 \newcommand{\fg}{>>}
+
+% Commande pour changer facilement le nom dauteur:
 \newcommand{\Auteur}[1]{%
-\hypersetup{pdfauthor = #1}
+    \hypersetup{pdfauthor = #1}%
 }
 
-% Configuration supplémentaire
+% Nouveau type de colonne dans tabularx: C qui correspond à X centré
 \newcolumntype{C}{>{\centering\arraybackslash}X}
+
+% On écrit les maths tout le temps en grand
 \everymath{\displaystyle}
 
-% Chargement de hyperref (à la fin du package)
-\RequirePackage{hyperref}
-\hypersetup{
- pdfauthor = David Couronn\'e,
- colorlinks=true,
- pdfstartview=FitV,
- linkcolor=blue,
- citecolor=blue,
- urlcolor=blue,
- allbordercolors = white,
- pdfstartview=FitH
+% Les liens hypertextes (conditional loading from original .cls is more robust)
+\RequirePackage{ifxetex,ifluatex}
+\ifxetex
+    \RequirePackage[xetex,colorlinks=true,pdfstartview=FitV,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\else
+    \RequirePackage[luatex,colorlinks=true,pdfstartview=FitV,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\fi
+%%%%%%%%%%%%%%%%%
+% Auteur PDF par défaut et autres options hyperref
+%%%%%%%%%%%%%%%%%
+\hypersetup{%
+    pdfauthor = David Couronn\'e,
+    %pdfsubject = {},
+    %pdftitle = {},
+    allbordercolors = white,
+    pdfstartview=FitH,
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
 }
 
-\renewcommand{\C}{\mathbb{C}}
+% Correction pour lensemble C des complexes (après hyperref)
+\renewcommand{\C}{\mathbb{C}} %Le package hyperref écrase la commande pour lensemble C des complexes...

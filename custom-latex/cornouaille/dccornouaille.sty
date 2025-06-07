@@ -14,13 +14,14 @@
 
 \RequirePackage{graphicx} %Pour insérer le logo
 \RequirePackage{multirow} %Pour écrire sur plusieurs lignes dans les tableaux.Besoin pour \Bareme
-%\RequirePackage{fancyhdr} %Pour les en-têtes et pides de page
+\RequirePackage{fancyhdr} %Pour les en-têtes et pides de page
 
 \RequirePackage{dctexte}
 
 \RequirePackage{verbatim}
 
 %Newwrite
+% These file handles are used for creating auxiliary files for grading tables and solution processing.
 \newwrite\lignebareme
 \newwrite\ligneexo
 \newwrite\tableau
@@ -28,15 +29,19 @@
 \newwrite\mycor
 
 %Compteurs
+% Various counters for exercises, solutions, points, and boolean flags (1=true, 0=false) controlling output.
 \newcounter{exercice}
 \newcounter{solution}
 \newcounter{total}% Total des points
 \newcounter{colnum}% Utilisé pour les tableaux automatiques
 \newcounter{boolbareme} %Affichage ou non du barème
+% boolbareme: Controls if the grading scale (\Bareme) is displayed.
 \setcounter{boolbareme}{1} %Par défaut on affiche le barème
 \newcounter{boolsolution} %Affiche ou non les solutions
+% boolsolution: Controls if solution environments are displayed.
 \setcounter{boolsolution}{1} %Par défaut on affiche les solutions
 \newcounter{boolds}
+% boolds: Flag to indicate if the document is a "Devoir Surveillé" (exam), affecting solution handling.
 \setcounter{boolds}{0}
 \newcounter{boolcommandebareme}
 \setcounter{boolcommandebareme}{0}
@@ -54,6 +59,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%% Interface pour le package verbatim %%%%%%%%%%%%%%%%%
+% Custom mechanism to capture content (like solutions) verbatim into external files.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \makeatletter
@@ -156,6 +162,7 @@
 
 %A placer en début de document: \Bareme
 %Commande Bareme
+% Defines the \Bareme command, which generates a grading table at the end of the document.
 \newcommand{\Bareme}{
   %\newcommand{\Bareme}{
   \setcounter{boolcommandebareme}{1}
@@ -191,6 +198,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %cornouaille
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Defines the \cornouaille command, which sets up the main page header/footer and title block for a document.
 \newcommandx{\cornouaille}[4][4]{ % Classe- Titre - Année
   \lhead{\small{#1}}
   \rhead{\small{#3}}
@@ -213,6 +221,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Redéfinition de la commande \exo
+% Defines \exo command and exercice environment for creating exercises and managing points.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommandx{\exo}[2][1,2]{%
   \addpointexo{#2}
@@ -268,6 +277,7 @@
 }%fin commande
 
 \newcommand{\dscornouaille}{
+% Initializes "Devoir Surveillé" (exam) mode: solutions are collected and printed at the end.
   \setcounter{boolds}{1}
   \immediate\openout\mycor=\jobname.bar
   %%%%
